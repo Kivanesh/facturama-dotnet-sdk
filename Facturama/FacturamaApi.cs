@@ -8,7 +8,7 @@ namespace Facturama
     {
         public FacturamaApi(string user, string password, bool isDevelopment = true)
         {
-            var url = isDevelopment ? "http://apisandbox.facturama.com.mx/" : "https://www.api.facturama.com.mx/";
+            var url = isDevelopment ? "https://apisandbox.facturama.mx/" : "https://api.facturama.mx/";
             
             var httpClient = new RestClient(url)
             {
@@ -32,7 +32,7 @@ namespace Facturama
         public ProfileService Profile { get; }
         public TaxEntityService TaxEntities { get;  }
         public SerieService Series { get; }
-        public CatalogService Catalogs { get; set; }
+        public CatalogService Catalogs { get; }
 
     }
 
