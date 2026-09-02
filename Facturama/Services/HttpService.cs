@@ -19,31 +19,47 @@ namespace Facturama.Services
 
     public abstract class HttpService<TI, TO> where TO : new()
     {
-        protected readonly RestClient HttpClient;
+        protected readonly IHttpClient HttpClient;
         protected readonly string UriResource;
 
         protected IRestResponse Execute(IRestRequest request)
         {
             var taskCompletionSource = new TaskCompletionSource<IRestResponse<TO>>();
-            HttpClient.ExecuteAsync<TO>(request, restResponse => taskCompletionSource.SetResult(restResponse));
+            HttpClient.ExecuteAsync<TO>(request, taskCompletionSource);
 
             var response = taskCompletionSource.Task.Result;
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 throw new FacturamaException("No esta autorizado para realizar esta petición, verifique su usuario y contraseña y que su suscripción se encuentre activa");
             }
+            if (response.ResponseStatus == ResponseStatus.TimedOut)
+            {
+                throw new TimeoutException($"TimeOut {response?.ErrorMessage} content:{response?.Content}");
+            }
             if (response.StatusCode == HttpStatusCode.BadRequest)
             {
-                var exception = JsonConvert.DeserializeObject<ModelException>(response.Content);
-                throw new FacturamaException(exception.Message, exception);
+                try
+                {
+                    var exception = JsonConvert.DeserializeObject<ModelException>(response.Content);
+                    throw new FacturamaException(exception?.Message ?? "Bad request", exception);
+                }
+                catch (JsonException ex)
+                {
+                    throw new JsonException($"Bad request. Content: {response?.Content}",ex);
+                }
             }
             if (response.StatusCode == HttpStatusCode.InternalServerError)
-                throw new Exception(response.ErrorMessage);
-
+            {
+                throw new Exception(response.Content, response.ErrorException);
+            }
+            if (response.StatusCode == HttpStatusCode.MethodNotAllowed)
+            {
+                throw new Exception(response.Content);
+            }
             return response;
         }
 
-        protected HttpService(RestClient httpClient, string uri)
+        protected HttpService(IHttpClient httpClient, string uri)
         {
             HttpClient = httpClient;
             UriResource = uri;
@@ -80,8 +96,16 @@ namespace Facturama.Services
             });
             request.AddParameter("application/json", json, ParameterType.RequestBody);
             var response = Execute(request);
-            var modelView = JsonConvert.DeserializeObject<TO>(response.Content);
-            return modelView;
+            try
+            {
+                var modelView = JsonConvert.DeserializeObject<TO>(response.Content);
+                return modelView;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Bad request. Content: {response?.Content}",ex);
+            }
+            
         }
 
         protected TO Put(TI obj, string id)

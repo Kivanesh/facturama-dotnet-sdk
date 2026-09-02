@@ -18,17 +18,23 @@ namespace Facturama.Models.Request
         Traslado,
 
         [EnumMember(Value = "P")]
-        Pago
+        Pago,
+
+	    [EnumMember(Value = "N")]
+	    Nomina
     }
 
-    public class Cfdi 
+    public class Cfdi
     {
+        [JsonProperty("Folio")]
+        public string Folio { get; set; }
+
         [JsonProperty("NameId")]
         public string NameId { get; set; }
 
         [JsonProperty("Date")]
         [JsonConverter(typeof(DateFormatConverter), "yyyy-MM-ddTHH:mm:ss")]
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
 
         [JsonProperty("Serie")]
         public string Serie { get; set; }
@@ -60,6 +66,13 @@ namespace Facturama.Models.Request
         [JsonProperty("PaymentMethod")]
         public string PaymentMethod { get; set; }
 
+        [JsonProperty("Exportation")]
+        public string Exportation { get; set; }
+
+        [JsonProperty("GlobalInformation")]
+        public GlobalInformation GlobalInformation { get; set; }
+
+
         [JsonProperty("Receiver")]
         public Receiver Receiver { get; set; }
 
@@ -74,5 +87,10 @@ namespace Facturama.Models.Request
 
         [JsonProperty("PaymentBankName")]
         public string PaymentBankName { get; set; }
+
+        [JsonProperty("Complemento")]
+        public Complement Complement { get; set; }
+
+
     }
 }

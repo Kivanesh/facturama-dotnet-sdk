@@ -1,28 +1,42 @@
 ﻿using Facturama.Services;
-using RestSharp;
 using RestSharp.Authenticators;
 
 namespace Facturama
 {
     public class FacturamaApi
     {
-        public FacturamaApi(string user, string password, bool isDevelopment = true)
-        {
-            var url = isDevelopment ? "http://apisandbox.facturama.com.mx/" : "https://www.api.facturama.com.mx/";
-            
-            var httpClient = new RestClient(url)
+        public FacturamaApi(string user, string password, string url)
+            : this(new RestClientService(new RestSharp.RestClient(url)
             {
-                Authenticator = new HttpBasicAuthenticator(user, password)
-            };
+                Authenticator = new HttpBasicAuthenticator(user, password),
+                UserAgent = user
+            }))
+        {
+        }
 
+        public FacturamaApi(string user, string password, bool isDevelopment = true)
+			: this(user, password, isDevelopment 
+				? "https://apisandbox.facturama.mx/" 
+				: "https://api.facturama.mx/")
+        {
+            
+		}
+
+        public FacturamaApi(IHttpClient httpClient)
+        {
             Clients = new ClientService(httpClient);
             Cfdis = new CfdiService(httpClient);
+            Retention = new RetentionService(httpClient);
             Products = new ProductService(httpClient);
             BranchOffices = new BranchOfficeService(httpClient);
             Profile = new ProfileService(httpClient);
             TaxEntities = new TaxEntityService(httpClient);
             Series = new SerieService(httpClient);
             Catalogs = new CatalogService(httpClient);
+            Store = new StoreService(httpClient);
+            Charges = new ChargeService(httpClient);
+            Customer = new CustomersService(httpClient);
+
         }
 
         public ProductService Products { get; }
@@ -32,7 +46,12 @@ namespace Facturama
         public ProfileService Profile { get; }
         public TaxEntityService TaxEntities { get;  }
         public SerieService Series { get; }
-        public CatalogService Catalogs { get; set; }
+        public CatalogService Catalogs { get; }
+		public StoreService Store { get; }
+		public ChargeService Charges { get; }
+		public RetentionService Retention { get; }
+
+        public CustomersService Customer { get; }
 
     }
 

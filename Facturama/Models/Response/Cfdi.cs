@@ -1,5 +1,6 @@
 ﻿namespace Facturama.Models.Response
 {
+    using Facturama.Models.Complements;
     using Newtonsoft.Json;
 
     public class Cfdi
@@ -69,6 +70,23 @@
 
         [JsonProperty("Complement")]
         public Complement Complement { get; set; }
+
+		[JsonProperty("SendMail")]
+		public bool SendMail { get; set; }
+
+        [JsonProperty("Status")]
+        public string Status { get; set; }
+
+        [JsonProperty("OriginalString")]
+        public string OriginalString { get; set; }
+
+        [JsonProperty("XmlBase64")]
+        public string XmlBase64 { get; set; }
+
+        [JsonProperty("TaxStamp")]
+        public TaxStamp TaxStamp { get; set; }
+
+
     }
 
     public class Complement
@@ -93,6 +111,12 @@
 
         [JsonProperty("SatSign")]
         public string SatSign { get; set; }
+
+        [JsonProperty("RfcProvCertif")]
+        public string RfcProvCertif { get; set; }
+
+        [JsonProperty("AutNumProvCertif")]
+        public string AutNumProvCertif { get; set; }
     }
 
     public class Issuer
@@ -141,6 +165,12 @@
 
         [JsonProperty("Total")]
         public decimal Total { get; set; }
+
+        [JsonProperty("IdentificationNumber")]
+        public string IdentificationNumber { get; set; }
+
+        [JsonProperty("Complement")]
+        public ItemComplement Complement { get; set; }
     }
 
     public class Receiver

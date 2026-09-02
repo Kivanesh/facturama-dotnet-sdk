@@ -1,99 +1,67 @@
+# Facturama dotnet  SDK
 
-# Facturama-SDK
-Libreria para consumir la API Web de Facturama.
+> Librería para consumir la API Web y API Multiemisor de [Facturama](https://api.facturama.mx/)
+>
+> Puedes consultar la guía completa de la [API](https://apisandbox.facturama.mx/guias)
+## Crear cuenta de usuario
 
-## Compatibilidad
-* .Net Framework 4.5 ó superior
+> Crear una cuenta de usuario en el ambiente de prueba [Sandbox](https://dev.facturama.mx/api/login) 
+>
+> Para API Web, realiza la configuración básica usando RFC de pruebas **"EKU9003173C9"**, más información [aquí](https://apisandbox.facturama.mx/guias/perfil-fiscal)
+>
+> Sellos Digitales de prueba  [CSD](https://github.com/rafa-dx/facturama-CSD-prueba)
 
-## Dependecias
+
+### Compatibilidad
+* .Net Framework 4.5 o superior
+
+## Dependencias
 * [Newtonsoft.Json](http://james.newtonking.com/json)
 * [RestSharp](http://restsharp.org/)
 * [System.ValueTuple](https://www.nuget.org/packages/System.ValueTuple/)
 
-## Inicio Rapido
+## Inicio Rápido
 
-#### Instalación #####
+### Instalación 
 
-Es recomendable utilizar [NuGet](http://docs.nuget.org) para instalar la librería. ó puedes hacer fork y modificar a tu conveniencia.
+Es recomendable utilizar [NuGet](http://docs.nuget.org) para instalar la librería. Tambien puedes hacer fork y modificar a tu conveniencia.
 ```net
-Install-Package Facturama -Version 1.0.0.1
+Install-Package Facturama
 ```
 
-#### Configuración  #####
+### Configuración  
 
-Al no recibir otro parametro aparte de usuario y contraseña la libreria esta en modo sandbox
+Al no recibir otro parámetro aparte de usuario y contraseña, la librería está en modo Sandbox.
 ```cs
 var facturama = new FacturamaApi("usuario", "contraseña");
 ```
-y especificando la propiedad isDevelopment en false esta en modo producción
+Especificando la propiedad isDevelopment en false, está en modo Producción.
 ```cs
 var facturama = new FacturamaApi("usuario", "contraseña", isDevelopment: false);
 ```
 
-## CFDI 3.3
-Creacion de CFDI 3.3
-```cs
-var cfdi = new Cfdi
-{
-    Serie = "R",
-    Currency = "MXN",
-    ExpeditionPlace = "78116",
-    PaymentConditions = "CREDITO A SIETE DIAS",
-    CfdiType = CfdiType.Ingreso,
-    PaymentForm = "03",
-    PaymentMethod = "PUE",
-    Receiver = new Receiver
-    {
-        Rfc = "RSS2202108U5",
-        Name = "RADIAL SOFTWARE SOLUTIONS",
-        CfdiUse = "P01"
-    },
-    Items = new List<Item>
-    {
-        new Item
-        {
-            ProductCode = "10101504",
-            IdentificationNumber = "EDL",
-            Description = "Estudios de viabilidad",
-            Unit = "NO APLICA",
-            UnitCode = "MTS",
-            UnitPrice = 50.00m,
-            Quantity = 2.00m,
-            Subtotal = 100.00m,
-            Taxes = new List<Tax>
-            {
-                new Tax
-                {
+## API Web
 
-                    Total = 16.00m,
-                    Name = "IVA",
-                    Base = 100.00m,
-                    Rate = 0.160000m,
-                    IsRetention = false
-                }
-            },
-            Total = 116.0m
-        }
-    }
-};
-var cfdiCreated = facturama.Cfdis.Create(cfdi);
-```
-Cancelación
-```.cs
-facturama.Cfdis.Remove(cfdiCreated.Id);
-```
-Descarga en el formato deseado xml, html ó pdf
-```.cs
-facturama.Cfdis.SavePdf($"factura.pdf", cfdiCreated.Id);
-facturama.Cfdis.SaveXml($"factura.xml", cfdiCreated.Id);
-```
-Consulta tus facturas en cualquier momento mediante una palabra clave ó algun atributo en específico
-```.cs
-facturama.Cfdis.List("Expresion en Software");
-facturama.Cfdis.List(rfc: "ESO1202108R2");
-```
+> Creación de CFDIs con un único emisor (el propietario de la cuenta, cuyo Perfil Fiscal se tiene configurado).
+> 
+> *Todas las operaciones son reflejadas en la plataforma web.*
+### Operaciones API Web
+- Crear, Consultar y Cancelar CFDI, así como descargar XML, PDF y envío de éstos por e-mail.
+- Consultar Perfil y Suscripción actual.
+- Carga de Logo y Certificados Digitales.
+- CRUD de Productos, Clientes, Sucursales y Series.
 
-## Otras Operaciones
-* Consultar Perfil y Suscripción actual,
-* Carga de Logo y Certificados Digitales
-* CRUD de Productos, Clientes, Sucursales y Series.
+Algunos ejemplos: [aquí](https://github.com/Facturama/facturama-dotnet-sdk/wiki/API-Web)
+
+
+## API Multiemisor
+
+> Creación de CFDIs con múltiples emisores.
+>
+> *Las operaciones NO se reflejan en la plataforma web.*
+### Operaciones API Multiemisor
+
+- Crear, Consultar, Cancelar descarga de XML.
+- CRUD de CSD (Certificados de los Sellos Digitales).
+- 
+Algunos ejemplos: [aquí](https://github.com/Facturama/facturama-dotnet-sdk/wiki/API-Multiemisor)

@@ -5,7 +5,7 @@ namespace Facturama.Services
 {
     public abstract class CrudService<TI, TO> : HttpService<TI, TO> where TO : new()
     {
-        protected CrudService(RestClient httpClient, string uri) 
+        protected CrudService(IHttpClient httpClient, string uri) 
             : base(httpClient, uri)
         {
 
@@ -22,6 +22,22 @@ namespace Facturama.Services
         }
 
         public virtual TO Create(TI obj)
+        {
+            return base.Post(obj);
+        }
+        public virtual TO Create3(TI obj)
+        {
+            return base.Post(obj);
+        }
+        public virtual TO Create4(TI obj)
+        {
+            return base.Post(obj);
+        }
+        public virtual TO CreateRet(TI obj)
+        {
+            return base.Post(obj);
+        }
+        public virtual TO CreateRet2(TI obj)
         {
             return base.Post(obj);
         }

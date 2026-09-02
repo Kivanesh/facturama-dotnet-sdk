@@ -1,4 +1,3 @@
-using Facturama.Models.Response.Catalogs.Cfdi;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
@@ -6,8 +5,14 @@ namespace Facturama.Models.Request
 {
     public class Item
     {
-        [JsonProperty("ProductCode")]
+	    [JsonProperty("IdProduct")]
+	    public string ProductId { get; set; }
+
+	    [JsonProperty("ProductCode")]
         public string ProductCode { get; set; }
+
+        [JsonProperty("SKU")]
+        public string SKU { get; set; }
 
         [JsonProperty("IdentificationNumber")]
         public string IdentificationNumber { get; set; }
@@ -30,16 +35,27 @@ namespace Facturama.Models.Request
         [JsonProperty("Subtotal")]
         public decimal Subtotal { get; set; }
 
+        [JsonProperty("TaxObject")]
+        public string TaxObject { get; set; }
+
+        [JsonProperty("ThirdPartyAccount")]
+        public ThirdPartyAccount ThirdPartyAccount { get; set; }
+
         [JsonProperty("Discount")]
-        public decimal Discount { get; set; }
+        public decimal? Discount { get; set; }
 
         [JsonProperty("Taxes")]
         public List<Tax> Taxes { get; set; }
 
-        [JsonProperty("CuentaPredial")]
-        public string CuentaPredial { get; set; }
+        [JsonProperty("PropertyTaxIDNumber")]
+        public IEnumerable<string> PropertyTaxIDNumber { get; set; }
+
+        [JsonProperty("NumerosPedimento")]
+        public IEnumerable<string> NumerosPedimento { get; set; }
 
         [JsonProperty("Total")]
         public decimal Total { get; set; }
+
+        public Complements.ItemComplement Complement { get; set; }
     }
 }
